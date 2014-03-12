@@ -1,0 +1,7 @@
+
+db_parameters:
+    dbn: postgres
+    db: voternet
+    
+error_email_recipients: your-email@example.com
+from_address: noreply@example.com
