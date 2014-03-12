@@ -171,18 +171,18 @@ $def render_field(field, help=None, **kwargs):
                   $:render_field(form.email, placeholder="Enter your email address")
 
                   <input type="hidden" id="ward" name="ward" value="$form.ward.data"/>                  
-                  $:render_field(form.address, placeholder="Enter address", help="Please pick the address from dropdown so that we can identify your ward automatically.")
+                  $:render_field(form.address, placeholder="Select your locality", help="Please pick a locality from the dropdown so that we can identify your ward automatically.")
                   <div class="address-details alert alert-info" style="display: none;">
-                    The above address falls in:<br/><br/>
+                    The above locality falls in:<br/><br/>
                     <div>
                     <span class="ward">J C Nagar</span> <small>Ward</small></strong><br/>
                     <span class="ac">Hebbal</span> <small>Assembly Constituency</small><br/>
                     <span class="pc">Bangalore North</span> <small>Parliamentary Constituency</small><br/>
                     </div><br/>
-                    <div><small>If you think it is not correct, please correct the address in the above text box.</small></div>
+                    <div><small>If you think it is not correct, please correct the locality in the above text box.</small></div>
                   </div>
                   <div class="address-error alert alert-danger" style="display: none;">
-                    <strong>Oops!</strong> The selected address doesn't seem to fall in any of the wards in Bangalore. Are you sure that is a place in Bangalore?
+                    <strong>Oops!</strong> The selected locality doesn't seem to fall in any of the wards in Bangalore. Are you sure that is in Bangalore?
                   </div>                  
                   <button type="submit" class="btn btn-primary">Sign Up</button>
                 </form>

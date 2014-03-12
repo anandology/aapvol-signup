@@ -32,7 +32,7 @@ class SignupForm(BaseForm):
         validators.Required(), 
         validators.Regexp(r'^\+?[0-9 -]{10,}$', message="That doesn't like a valid phone number.")])
     email = StringField('Email Address', [validators.Required(), validators.Email()])
-    address = StringField('Address', [validators.Required()])
+    address = StringField('Locality', [validators.Required()])
     ward = HiddenField()
 
     def validate_address(self, field):
