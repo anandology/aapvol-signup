@@ -9,11 +9,11 @@ import csv
 
 soup = BeautifulSoup(open("static/bruhath_bangalore_mahanagara_palike.kml").read(), "xml")
 
-ward_info = dict((row[0], row) for row in csv.reader(open("wards.tsv"), delimiter="\t"))
+ward_info = dict((row[0], row) for row in csv.reader(open("static/wards.tsv"), delimiter="\t"))
 
 def parse_coordinates(coordinates):
     d = coordinates.strip().replace(",0 ", ",").split(",")
-    return list(web.group(d, 2))
+    return " ".join(d)
 
 def parse_ward(e):
     name = e.find("name").get_text()
@@ -28,15 +28,11 @@ def parse_ward(e):
     path = "KA/{}/{}".format(ac.split("-")[0].strip(), code)
 
     return {
-        "ward_no": ward_no,
-        "code": code,
-        "name": name,
-        "description": description,
         "ward": code + " - " + name,
         "ac": ac,
         "pc": pc,
         "path": path,
-        "coordinates": parse_coordinates(e.find("coordinates").get_text())
+        "c": parse_coordinates(e.find("coordinates").get_text())
     }
 
 elems = soup.find("Folder").find_all("Folder")
@@ -45,4 +41,11 @@ print "//"
 print "// Bangalore Ward Boundaries"
 print "// Generated using ward maps KML file from openbangalore.org"
 print "//"
-print "var wards = " + json.dumps(wards, indent=True) + ";"
+print "var wards = " + json.dumps(wards, separators=(',', ':')) + ";"
+print """for (var i=0; i<wards.length; i++) {
+  var tokens = wards[i].c.split(" ");
+  wards[i].coordinates = [];
+  wards[i].c = null;
+  for (var j=0; j<tokens.length; j++)
+    wards[i].coordinates.push([tokens[j], tokens[j+1]]);
+}"""

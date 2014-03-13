@@ -3,7 +3,10 @@ import web
 import yaml
 from wtforms import Form, StringField, HiddenField, validators, ValidationError
 
-urls = ("/", "signup")
+urls = (
+    "/", "signup",
+    "/wards.js", "wards_js"
+)
 app = web.application(urls, globals())
 render = web.template.render("templates/", base="site")
 xrender = web.template.render("templates/")
@@ -72,6 +75,17 @@ class signup:
             email=i.email, 
             address=i.address,
             place_id=place_id)
+
+class wards_js:
+    def GET(self):
+        accept_encoding = web.ctx.environ.get("HTTP_ACCEPT_ENCODING", "")
+        if 'gzip' not in accept_encoding:
+            raise web.seeother("/static/wards.js")
+        web.header("Content-Encoding", "gzip")
+        web.header("Content-Type", "application/x-javascript")
+        oneyear = 365 * 24 * 3600
+        web.header("Cache-Control", "Public, max-age=%d" % oneyear)
+        return open("static/wards.js.gz")
 
 def check_config():
     if "--config" in sys.argv:
