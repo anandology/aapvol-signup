@@ -1,4 +1,59 @@
 $def with (form)
+
+$def render_field(field, help=None, **kwargs):
+    $ kwargs['class'] = "form-control"
+    $if field.errors:
+        $ klass="has-error"
+    $else:
+        $ klass=''
+    <div class="form-group $klass">
+        $:field.label
+        $:field(**kwargs)
+        <ul class="help-block list-unstyled">
+            $for error in field.errors:
+                <li>$error</li>
+        </ul>
+        $if help:
+            <p class="help-block">$help</p>        
+    </div>
+
+<div class="container-fluid" style="height: 100%;">
+    <div class="row" style="height: 100%;">
+        <div class="col-md-4">
+            <div id="panel2">
+              <h2>Sign Up As Volunteer</h2>
+
+              <p>Sign up as volunteer for Aam Aadmi Party, Karnataka.</p>
+
+                <form class="form" id="signup-form" method="POST" role="form" >
+                  $:render_field(form.name, placeholder="Enter your name")
+                  $:render_field(form.phone, placeholder="Enter your phone number")
+                  $:render_field(form.email, placeholder="Enter your email address")
+
+                  <input type="hidden" id="ward" name="ward" value="$form.ward.data"/>                  
+                  $:render_field(form.address, placeholder="Select your locality", help="Please pick a locality from the dropdown so that we can identify your ward automatically.")
+                  <div class="address-details alert alert-info" style="display: none;">
+                    The above locality falls in:<br/><br/>
+                    <div>
+                    <span class="ward">J C Nagar</span> <small>Ward</small></strong><br/>
+                    <span class="ac">Hebbal</span> <small>Assembly Constituency</small><br/>
+                    <span class="pc">Bangalore North</span> <small>Parliamentary Constituency</small><br/>
+                    </div><br/>
+                    <div><small>If you think it is not correct, please correct the locality in the above text box.</small></div>
+                  </div>
+                  <div class="address-error alert alert-danger" style="display: none;">
+                    <strong>Oops!</strong> The selected locality doesn't seem to fall in any of the wards in Bangalore. Are you sure that is in Bangalore?
+                  </div>                  
+                  <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8" style="height: 100%">
+            <div id="map-canvas" style="height: 100%; min-height: 500px;"></div>
+        </div>
+    </div>
+</div>
+
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript" src="/wards.js"></script>
 
@@ -139,58 +194,3 @@ google.maps.event.addDomListener(window, 'load', initialize);
 });
 
 </script>
-
-$def render_field(field, help=None, **kwargs):
-    $ kwargs['class'] = "form-control"
-    $if field.errors:
-        $ klass="has-error"
-    $else:
-        $ klass=''
-    <div class="form-group $klass">
-        $:field.label
-        $:field(**kwargs)
-        <ul class="help-block list-unstyled">
-            $for error in field.errors:
-                <li>$error</li>
-        </ul>
-        $if help:
-            <p class="help-block">$help</p>        
-    </div>
-
-<div class="container-fluid" style="height: 100%;">
-    <div class="row" style="height: 100%;">
-        <div class="col-md-4">
-            <div id="panel2">
-              <h2>Sign Up As Volunteer</h2>
-
-              <p>Sign up as volunteer for Aam Aadmi Party, Karnataka.</p>
-
-                <form class="form" id="signup-form" method="POST" role="form" >
-                  $:render_field(form.name, placeholder="Enter your name")
-                  $:render_field(form.phone, placeholder="Enter your phone number")
-                  $:render_field(form.email, placeholder="Enter your email address")
-
-                  <input type="hidden" id="ward" name="ward" value="$form.ward.data"/>                  
-                  $:render_field(form.address, placeholder="Select your locality", help="Please pick a locality from the dropdown so that we can identify your ward automatically.")
-                  <div class="address-details alert alert-info" style="display: none;">
-                    The above locality falls in:<br/><br/>
-                    <div>
-                    <span class="ward">J C Nagar</span> <small>Ward</small></strong><br/>
-                    <span class="ac">Hebbal</span> <small>Assembly Constituency</small><br/>
-                    <span class="pc">Bangalore North</span> <small>Parliamentary Constituency</small><br/>
-                    </div><br/>
-                    <div><small>If you think it is not correct, please correct the locality in the above text box.</small></div>
-                  </div>
-                  <div class="address-error alert alert-danger" style="display: none;">
-                    <strong>Oops!</strong> The selected locality doesn't seem to fall in any of the wards in Bangalore. Are you sure that is in Bangalore?
-                  </div>                  
-                  <button type="submit" class="btn btn-primary">Sign Up</button>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-8" style="height: 100%">
-            <div id="map-canvas" style="height: 100%; min-height: 500px;"></div>
-        </div>
-    </div>
-</div>
-
