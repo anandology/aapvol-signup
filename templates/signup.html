@@ -20,7 +20,7 @@ $def render_field(field, help=None, **kwargs):
 <div class="container-fluid" style="height: 100%;">
     <div class="row" style="height: 100%;">
         <div class="col-md-4">
-            <div class="panel2">
+            <div id="panel2">
               <h2>Sign Up As Volunteer</h2>
 
               <p>Sign up as volunteer for Aam Aadmi Party, Karnataka.</p>
@@ -49,23 +49,16 @@ $def render_field(field, help=None, **kwargs):
             </div>
         </div>
         <div class="col-md-8" style="height: 100%">
-            <div id="map-canvas" style="height: 100%; min-height: 500px;">
-              <div class="panel2"><h2>Loading map...</h2></div>
-            </div>
+            <div id="map-canvas" style="height: 100%; min-height: 500px;"></div>
         </div>
     </div>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+<script type="text/javascript" src="/wards.js"></script>
 
 <script type="text/javascript">
-wards = null; // gets over written by wards.js
-var wards_ready = false;
-
 function setup_wards() {
-    if (wards_ready)
-      return;
-
     for (var i=0; i<wards.length; i++) {
         var w = wards[i];
         var paths = [];
@@ -75,13 +68,9 @@ function setup_wards() {
             "paths": paths
         });
     }
-    ward_ready = true;
 }
 
 function find_ward(point) {
-    if (wards == null)
-      return null;
-    setup_wards();
     for (var i=0; i<wards.length; i++) {
         if (google.maps.geometry.poly.containsLocation(point, wards[i].polygon))
             return wards[i];
@@ -188,6 +177,8 @@ function initialize() {
   setupClickListener('changetype-geocode', ['geocode']);
 }
 
+setup_wards();
+
 google.maps.event.addDomListener(window, 'load', initialize);
 
 \$(function() {
@@ -201,5 +192,5 @@ google.maps.event.addDomListener(window, 'load', initialize);
     }
   });
 });
+
 </script>
-<script type="text/javascript" src="/wards.js"></script>
