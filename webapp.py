@@ -39,8 +39,10 @@ class SignupForm(BaseForm):
     ward = HiddenField()
 
     def validate_address(self, field):
-        print 
         if not self.ward.data:
+            raise ValidationError("Please select a place from the dropdown.")
+        place = Place.find(self.ward.data)
+        if not place:
             raise ValidationError("Please select a place from the dropdown.")
 
 class signup:
@@ -53,28 +55,55 @@ class signup:
         print "signup.POST", i
         form = SignupForm(i)
         if form.validate():
-            place_id = self.get_place_id(i.ward)
-            self.save_volunteer(i, place_id)
-            
-            send_email(i.email, xrender.email_thankyou(i.name))
-            return render.thankyou(i)
+            place = Place.find(i.ward)
+            place.save_volunteer(i)
+            msg = xrender.email_thankyou(place, i)
+            cc = [c.email for c in place.get_coordinators()]
+            bcc = web.config.get("admins", [])
+            send_email(i.email, msg, cc=cc, bcc=bcc)
+
+            return render.thankyou(place, i)
         else:
             return render.signup(form)
 
-    def get_place_id(self, path):
-        result = get_db().select("places", where="key=$path", vars=locals()) 
+class Place(web.storage):
+    @staticmethod
+    def find(key):        
+        result = get_db().select("places", where="key=$key", vars=locals()) 
         if result:
-            return result[0].id
-        else:
-            return None
+            return Place(result[0])
 
-    def save_volunteer(self, i, place_id):
+    @staticmethod
+    def find_by_id(id):        
+        result = get_db().select("places", where="id=$id", vars=locals()) 
+        if result:
+            return Place(result[0])
+
+    def get_coordinators(self):
+        result = get_db().select("people", where="place_id=$self.id AND role='coordinator'", vars=locals())
+        if not result:
+            result = get_db().select("people", where="place_id=$self.ac_id AND role='coordinator'", vars=locals())
+        if result:       
+            return result.list()
+        else:
+            return []
+
+    def get_ac(self):
+        return self.ac_id and Place.find_by_id(self.ac_id)
+
+    def get_ac_name(self):
+        return Place.find_by_id(self.ac_id).name
+
+    def get_pc_name(self):
+        return Place.find_by_id(self.pc_id).name
+
+    def save_volunteer(self, i):
         get_db().insert("volunteer_signups", 
             name=i.name, 
             phone=i.phone, 
             email=i.email, 
             address=i.address,
-            place_id=place_id)
+            place_id=self.id)
 
 class wards_js:
     def GET(self):
@@ -97,17 +126,20 @@ def check_config():
 def load_config(configfile):
     web.config.update(yaml.load(open(configfile)))
 
-def send_email(to_addr, message):
+def send_email(to_addr, message, cc=None, bcc=None):
     subject = message.subject.strip()
     message = web.safestr(message)
     if web.config.debug:
         print "To: ", to_addr
         print "Subject: ", subject
+        if cc:
+            print "Cc: ", cc
+        if bcc:
+            print "Bcc: ", bcc
         print
         print message
     else:
-        bcc = web.config.get("admins", [])
-        web.sendmail(web.config.from_address, to_addr, subject, message, bcc=bcc)
+        web.sendmail(web.config.from_address, to_addr, subject, message, cc=cc, bcc=bcc)
 
 def main():
     check_config()
