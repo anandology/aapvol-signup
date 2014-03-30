@@ -104,6 +104,12 @@ class Place(web.storage):
             email=i.email, 
             address=i.address,
             place_id=self.id)
+        get_db().insert("people", 
+            name=i.name, 
+            phone=i.phone, 
+            email=i.email, 
+            place_id=self.id,
+            role="pb_agent")
 
 class wards_js:
     def GET(self):
