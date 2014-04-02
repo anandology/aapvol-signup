@@ -29,7 +29,7 @@ $def render_field(field, help=None, **kwargs):
                   $:render_field(form.name, placeholder="Enter your name")
                   $:render_field(form.phone, placeholder="Enter your phone number")
                   $:render_field(form.email, placeholder="Enter your email address")
-                  $:render_field(form.voterid, placeholder="Enter your voter ID")
+                  $:render_field(form.voterid, placeholder="Enter your voter ID", help="You can fill it later if you don't have it right now.")
 
                   <input type="hidden" id="ward" name="ward" value="$form.ward.data"/>                  
                   $:render_field(form.address, placeholder="Select your locality", help="Please pick a locality from the dropdown so that we can identify your ward automatically.")
