@@ -21,14 +21,15 @@ $def render_field(field, help=None, **kwargs):
     <div class="row" style="height: 100%;">
         <div class="col-md-4">
             <div id="panel2">
-              <h2>Sign Up As Volunteer</h2>
+              <h2>Booth Agent Registration</h2>
 
-              <p>Sign up as volunteer for Aam Aadmi Party, Karnataka.</p>
+              <p>Sign up a polling booth agent for AAM AADMI PARTY, Karnataka.</p>
 
                 <form class="form" id="signup-form" method="POST" role="form" >
                   $:render_field(form.name, placeholder="Enter your name")
                   $:render_field(form.phone, placeholder="Enter your phone number")
                   $:render_field(form.email, placeholder="Enter your email address")
+                  $:render_field(form.voterid, placeholder="Enter your voter ID")
 
                   <input type="hidden" id="ward" name="ward" value="$form.ward.data"/>                  
                   $:render_field(form.address, placeholder="Select your locality", help="Please pick a locality from the dropdown so that we can identify your ward automatically.")

@@ -35,6 +35,7 @@ class SignupForm(BaseForm):
         validators.Required(), 
         validators.Regexp(r'^\+?[0-9 -]{10,}$', message="That doesn't like a valid phone number.")])
     email = StringField('Email Address', [validators.Required(), validators.Email()])
+    voterid = StringField('Voter ID')
     address = StringField('Locality', [validators.Required()])
     ward = HiddenField()
 
@@ -102,6 +103,7 @@ class Place(web.storage):
             name=i.name, 
             phone=i.phone, 
             email=i.email, 
+            voterid=i.voterid,
             address=i.address,
             place_id=self.id)
         get_db().insert("people", 
@@ -109,6 +111,7 @@ class Place(web.storage):
             phone=i.phone, 
             email=i.email, 
             place_id=self.id,
+            voterid=i.voterid,
             role="pb_agent")
 
 class wards_js:
